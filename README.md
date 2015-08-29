@@ -20,9 +20,13 @@ pebble-linux-remote/host_python$ python pebble_connection.py ./default.ini
 INFO:root:Connection ok, entering to active state..
 ```
 
-Then check the default.ini for example how to do the key / command configuration. When the python script starts up, it sends the configuration to pebble. Currently unsubscribing from events requires re-starting the app on the pebble.
+When the pebble-app enters connection ok state, it inverts the colors: when connected the background is white, when disconnected the background is black.
 
-You might want to disable the multi-click handlers to get faster sending of the single click events (pebble must wait for timeout of the second click to determine if its multi or single click). Here is the example config:
+You probably want to modify the default.ini to change the command configuration. When the python script starts up, it sends the configuration (what buttons are in use) to pebble. Currently unsubscribing from events requires re-starting the app on the pebble (since i did not find a easy way to unsubscribe from click event listener).
+
+You might want to disable the multi-click handlers on some buttons to get faster sending of the single click events (When enabled Pebble must wait after single click for timeout if the second click to happen). 
+
+### Example config:
 ```
 [main]
 device = /dev/rfcomm0
