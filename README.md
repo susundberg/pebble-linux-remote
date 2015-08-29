@@ -15,13 +15,37 @@ Control your linux computer with your pebble watch!
 ## Usage
 
 Start app on the pebble, start python script on the linux. 
-``` pebble-linux-remote/host_python$ python pebble_connection.py ./default.ini 
+``` 
+pebble-linux-remote/host_python$ python pebble_connection.py ./default.ini 
 INFO:root:Connection ok, entering to active state..
 ```
 
 Then check the default.ini for example how to do the key / command configuration. When the python script starts up, it sends the configuration to pebble. Currently unsubscribing from events requires re-starting the app on the pebble.
 
-You might want to disable the multi-click handlers to get faster sending of the single click events (pebble must wait for timeout of the second click to determine if its multi or single click).
+You might want to disable the multi-click handlers to get faster sending of the single click events (pebble must wait for timeout of the second click to determine if its multi or single click). Here is the example config:
+```
+[main]
+device = /dev/rfcomm0
+uuid = 7f1742c48dc94bb7ac8b309faf58985a
+
+[commands]
+UP,SINGLE = xdotool key Page_Up ; Emulate page down key press event -- apt-get install xdotool
+DOWN,SINGLE = xdotool key Page_Down  ; Emulate page down key press event
+UP,LONG = espeak "DO A BARREL ROLL!"  ; apt-get install espeak to get sound out!
+DOWN,LONG = espeak "You pressed DOWN with LONG"
+
+; Enabling the double click will make single click register slower, since pebble must wait
+; for the other click.
+; UP,MULTI= espeak "DO A BARREL ROLL!"
+; DOWN,MULTI = espeak "Noup! Its chuck tesla"
+SELECT,MULTI = espeak "TROLOLOLOLOLOLO" 
+
+SELECT,SINGLE = espeak "Problem officer"
+SELECT,LONG = xdotool key ctrl+alt+l ; Lock the screen by pressing ctrl+alt+l
+
+```
+
+
 
 ## Known issues
 
