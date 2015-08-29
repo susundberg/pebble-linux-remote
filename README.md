@@ -55,10 +55,7 @@ SELECT,LONG = xdotool key ctrl+alt+l ; Lock the screen by pressing ctrl+alt+l
 
 * On Kubuntu 15.04 there was modem-manager connecting to the bluetooth device, it will mess up connection.
 
-* The bluetooth connection seems to fail sometimes at the python start-up. Re-starting the python script / and / or disable-enable toggle on the pebble helps.
-
-* If the pebble is connected to other device (say your android phone) the connection does not work. You can have multiple pairings on the pebble, it works fine, but at least my experience was that simultanius connections do not work.
-
+* The bluetooth connection seems to fail sometimes at the python start-up. Re-starting the python script / and / or disable-enable toggle on the pebble helps. NOTE: If the pebble is connected to other device (say your android phone) the connection does not work. You can have multiple pairings on the pebble, it works fine, but at least my experience was that simultanius connections do not work.
 
 
 ## Installation 
