@@ -71,12 +71,12 @@ You need to install:
 
 ### Part 1: Installing Python script 
 
-#### Part 1, option A: Installing with virtualenv
+#### Option 1.A: Installing with virtualenv
 ```
 virtualenv ./env/
 pip install -r requirements.txt
 ```
-#### Part 1, option B: Installing with host python
+#### Option 1.B: Installing with host python
  * Tested with Ubuntu 14.04
  * ```apt-get install python-enum34 python-six python-serial``` 
 
@@ -90,12 +90,11 @@ pip install -r requirements.txt
 * Install the app from store or compile it on your own.
 * No configuration required.
 
-### Compiling 
+### Option 3.A: Compiling 
   Compiled with Pebble SDK3.0, simple as ```pebble build && pebble install ```
 
-### From the store
- Search for pebble-linux-remote. 
- 
+### Option 3.b: From the store
+ Search for pebble-linux-remote and install it. 
 
 ## Testing & Bug & Support
 
