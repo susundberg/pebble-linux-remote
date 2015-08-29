@@ -103,3 +103,6 @@ pip install -r requirements.txt
 * Development/manual testing enviroment was Ubuntu 14.04 with updated kernel 3.15.0-031500rc2.
 * Pebble firmware version used 2.9.1
 
+## Used libraries
+* All of the communications are handled with [libpebble2](https://github.com/pebble/libpebble2). I have stripped down the library a bit for my needs. All sources in libbpebble2 directory are from that project.
+
