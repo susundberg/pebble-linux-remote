@@ -1,0 +1,21 @@
+{
+  "uuid": "7f1742c4-8dc9-4bb7-ac8b-309faf58985a",
+  "shortName": "Linux Remote",
+  "longName": "Linux remote control",
+  "companyName": "Pauli Salmenrinne",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": [
+    "aplite",
+    "basalt"
+  ],
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "KEY_DATA": 5
+  },
+  "resources": {
+    "media": []
+  }
+}
