@@ -102,7 +102,7 @@ pip install -r requirements.txt
 * Use github for issue reporting & tracking
 * Tested enviroments:
     * Ubuntu 14.04 with updated kernel 3.15.0-031500rc2 - internal usb adapter 0a5c:21e1
-    * Kubuntu 15.04 / 3.19.0-32-generic and 3.19.8-031908-generic - internal usb adapter 0a5c:21e1 (Note: ModemManager disturbing$
+    * Kubuntu 15.04 / 3.19.0-32-generic and 3.19.8-031908-generic - internal usb adapter 0a5c:21e1 (Note: ModemManager disturbing!)
 * Pebble firmware version used 2.9.1
 
 ## Used libraries
