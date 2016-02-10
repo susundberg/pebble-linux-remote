@@ -18,6 +18,8 @@ from libpebble2.communication import PebbleConnection
 from libpebble2.communication.transports.serial import SerialTransport
 from libpebble2.communication.transports.websocket import WebsocketTransport
 from libpebble2.services.appmessage import AppMessageService, CString, Uint8
+from libpebble2.protocol.apps import AppRunStateStart
+from libpebble2.protocol.apps import AppRunState
 import libpebble2.exceptions
 
 
@@ -165,6 +167,9 @@ def main(settings):
     commwatch = CommunicationKeeper(settings, appservice)
     appservice.register_handler("nack", commwatch.nack_received)
     appservice.register_handler("ack", commwatch.ack_received)
+
+    # Start the watchapp
+    pebble.send_packet(AppRunState(command = 0x01, data=AppRunStateStart(uuid = uuid.UUID(settings.uuid))))
 
     # Send our current config
     for (id_key, id_type) in get_button_ids():

@@ -58,3 +58,7 @@ target/
 *.pyc
 *.kdev4
 pebble_app/build/
+
+# venv for testing
+venv/
+host_python/testing.ini
