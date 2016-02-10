@@ -114,4 +114,4 @@ pip install -r requirements.txt
 * Pebble firmware version used 2.9.1
 
 ## Used libraries
-* All of the communications are handled with [libpebble2](https://github.com/pebble/libpebble2). I have stripped down the library a bit for my needs. All sources in libbpebble2 directory are from that project.
+* All of the communications are handled with [libpebble2](https://github.com/pebble/libpebble2).
