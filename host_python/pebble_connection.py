@@ -2,20 +2,21 @@
 
 """
  Simple looper to receiven and send messages to the pebble.
- author: Pauli Salmenrinne 
+ author: Pauli Salmenrinne
 """
 
 import argparse
 import struct
 import ConfigParser
 import time
-import logging 
+import logging
 import uuid
 from subprocess import call as subprocess_call
 
 
 from libpebble2.communication import PebbleConnection
 from libpebble2.communication.transports.serial import SerialTransport
+from libpebble2.communication.transports.websocket import WebsocketTransport
 from libpebble2.services.appmessage import AppMessageService, CString, Uint8
 import libpebble2.exceptions
 
@@ -40,6 +41,7 @@ def get_settings():
     conf = ConfigParser.ConfigParser()
     conf.read(settings.config)
 
+    settings.transport = conf.get('main', 'transport')
     settings.device = conf.get('main', 'device')
     settings.uuid = conf.get('main', 'uuid')
 
@@ -140,9 +142,12 @@ import sys
 def main(settings):
     """ Main function for the communicatior, loops here """
 
-    pebble = PebbleConnection(SerialTransport(settings.device), log_packet_level=logging.DEBUG)
+    if settings.transport == "websocket":
+        pebble = PebbleConnection(WebsocketTransport(settings.device), log_packet_level=logging.DEBUG)
+    else: # No elif, for compatibility with older configs
+        pebble = PebbleConnection(SerialTransport(settings.device), log_packet_level=logging.DEBUG)
     pebble.connect()
-    
+
     # For some reason it seems to timeout for the first time, with "somebody is eating our input" error,
     # replying seems to help.
     for loop in range(5):
