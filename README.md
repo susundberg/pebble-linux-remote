@@ -80,7 +80,7 @@ pip install -r requirements.txt
 ```
 #### Option 1.B: Installing with host python
  * Tested with Ubuntu 14.04
- * ```apt-get install python-enum34 python-six python-serial```
+ * ```apt-get install python-enum34 python-six python-serial python-websocket```
  * ```pip install -r requirements.txt```
 
 ## Part 2: Preparing OS stuff

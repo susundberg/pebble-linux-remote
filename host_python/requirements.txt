@@ -2,3 +2,5 @@ enum34==1.0.4
 pyserial==2.7
 six==1.9.0
 wheel==0.24.0
+websocket-client==0.35.0
+
