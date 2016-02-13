@@ -11,7 +11,7 @@ import threading
 
 from .transports import BaseTransport, MessageTargetWatch
 from libpebble2.events.threaded import ThreadedEventHandler
-from libpebble2.exceptions import PacketDecodeError, ConnectionError
+from libpebble2.exceptions import PacketDecodeError, ConnectionError, IncompleteMessage
 from libpebble2.protocol.base import PebblePacket, PacketType
 from libpebble2.protocol.system import (PhoneAppVersion, AppVersionResponse, WatchVersion, WatchVersionRequest,
                                         WatchVersionResponse, WatchModel, ModelRequest, Model)
@@ -41,6 +41,7 @@ class PebbleConnection(object):
     def __init__(self, transport, log_protocol_level=None, log_packet_level=None):
         assert isinstance(transport, BaseTransport)
         self.transport = transport
+        self.pending_bytes = b''
         self.event_handler = ThreadedEventHandler()
         self._register_internal_handlers()
         self._watch_info = None
@@ -108,10 +109,29 @@ class PebbleConnection(object):
         :param message: A raw message from the watch, without any transport framing.
         :type message: bytes
         """
+        if self.log_protocol_level is not None:
+            logger.log(self.log_protocol_level, "<- %s", hexlify(message).decode())
+        message = self.pending_bytes + message
+
         while len(message) >= 4:
-            if self.log_protocol_level is not None:
-                logger.log(self.log_protocol_level, "<- %s", hexlify(message).decode())
-            packet, length = PebblePacket.parse_message(message)
+            try:
+                packet, length = PebblePacket.parse_message(message)
+            except IncompleteMessage:
+                self.pending_bytes = message
+                break
+            except:
+                # At this point we've failed to deconstruct the message via normal means, but we don't want to end
+                # up permanently desynced (because we wiped a partial message), nor do we want to get stuck (because
+                # we didn't wipe anything). We therefore parse the packet length manually and skip ahead that far.
+                # If the expected length is 0, we wipe everything to ensure forward motion (but we are quite probably
+                # screwed).
+                expected_length, = struct.unpack('!H', message[:2])
+                if expected_length == 0:
+                    self.pending_bytes = b''
+                else:
+                    self.pending_bytes = message[expected_length + 4:]
+                raise
+
             self.event_handler.broadcast_event("raw_inbound", message[:length])
             if self.log_packet_level is not None:
                 logger.log(self.log_packet_level, "<- %s", packet)
@@ -119,6 +139,7 @@ class PebbleConnection(object):
             self.event_handler.broadcast_event((_EventType.Watch, type(packet)), packet)
             if length == 0:
                 break
+        self.pending_bytes = message
 
     def _broadcast_transport_message(self, origin, message):
         """
@@ -193,6 +214,9 @@ class PebbleConnection(object):
         .. warning::
            Avoid calling this method from an endpoint callback; doing so is likely to lead to deadlock.
 
+        .. note::
+           If you're reading a response to a message you just sent, :meth:`send_and_read` might be more appropriate.
+
         :param endpoint: The endpoint to read from.
         :type endpoint: .PacketType
         :param timeout: The maximum time to wait before raising :exc:`.TimeoutError`.
@@ -241,6 +265,28 @@ class PebbleConnection(object):
         self.event_handler.broadcast_event("raw_outbound", serialised)
         self.send_raw(serialised)
 
+    def send_and_read(self, packet, endpoint, timeout=10):
+        """
+        Sends a packet, then returns the next response received from that endpoint. This method sets up a listener
+        before it actually sends the message, avoiding a potential race.
+
+        .. warning::
+           Avoid calling this method from an endpoint callback; doing so is likely to lead to deadlock.
+
+        :param packet: The message to send.
+        :type packet: .PebblePacket
+        :param endpoint: The endpoint to read from
+        :type endpoint: .PacketType
+        :param timeout: The maximum time to wait before raising :exc:`.TimeoutError`.
+        :return: The message read from the endpoint; of the same type as passed to ``endpoint``.
+        """
+        queue = self.get_endpoint_queue(endpoint)
+        self.send_packet(packet)
+        try:
+            return queue.get(timeout=timeout)
+        finally:
+            queue.close()
+
     def send_raw(self, message):
         """
         Sends a raw binary message to the Pebble. No processing will be applied, but any transport framing should be
@@ -275,8 +321,7 @@ class PebbleConnection(object):
         This method should be called before accessing :attr:`watch_info`, :attr:`firmware_version`
         or :attr:`watch_platform`. Blocks until it has fetched the required information.
         """
-        self.send_packet(WatchVersion(data=WatchVersionRequest()))
-        self._watch_info = self.read_from_endpoint(WatchVersion).data
+        self._watch_info = self.send_and_read(WatchVersion(data=WatchVersionRequest()), WatchVersion).data
 
     @property
     def watch_info(self):
@@ -323,10 +368,9 @@ class PebbleConnection(object):
         :rtype: ~libpebble2.protocol.system.Model
         """
         if self._watch_model is None:
-            self.send_packet(WatchModel(data=ModelRequest()))
-            info_bytes = self.read_from_endpoint(WatchModel).data.data
+            info_bytes = self.send_and_read(WatchModel(data=ModelRequest()), WatchModel).data.data
             if len(info_bytes) == 4:
-                self._watch_model = struct.unpack('>I', info_bytes)
+                self._watch_model, = struct.unpack('>I', info_bytes)
             else:
                 self._watch_model = Model.Unknown
         return self._watch_model
@@ -334,7 +378,7 @@ class PebbleConnection(object):
     @property
     def watch_platform(self):
         """
-        A string naming the platform of the watch ('aplite', 'basalt', or 'unknown').
+        A string naming the platform of the watch ('aplite', 'basalt', 'chalk', or 'unknown').
 
         .. note:
            This is a blocking call if :meth:`fetch_watch_info` has not yet been called, which could lead to deadlock

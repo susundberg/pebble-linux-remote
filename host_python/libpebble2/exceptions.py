@@ -43,8 +43,19 @@ class PacketDecodeError(PebbleError):
     pass
 
 
+class PacketEncodeError(PebbleError):
+    """
+    Encoding a packet failed.
+    """
+    pass
+
+
 class ConnectionError(PebbleError):
     """
     Connecting to the Pebble failed.
     """
+    pass
+
+
+class IncompleteMessage(PebbleError):
     pass
