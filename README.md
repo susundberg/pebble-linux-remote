@@ -114,4 +114,4 @@ pip install -r requirements.txt
 * Pebble firmware version used 2.9.1
 
 ## Used libraries
-* All of the communications with Pebble watch are handled with [libpebble2](https://github.com/pebble/libpebble2). This repository has stripped down version of it included, so that one is able to use standard package manager (apt-get). One should be able to replace the stripped down libpebble2 shipped with this repository with the original libpebble2 or with the  ```pip install libpebble2. ```
+* All of the communications with Pebble watch are handled with [libpebble2](https://github.com/pebble/libpebble2). This repository has stripped down version of it included, so that one is able to use standard package manager (apt-get). One should be able to replace the stripped down libpebble2 shipped with this repository with the original libpebble2 or with the  ```pip install libpebble2. ``` In case you want to use the real thing - just remove the libpebble2 directory from the this repository source. 
