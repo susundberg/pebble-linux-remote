@@ -4,7 +4,8 @@ Control your linux computer with your pebble watch!
 
 ## Features
 
-* Pebble C-app to send app-messages directly over bluetooth to your linux bluetooth receiver. No android / ios device required.
+* Pebble C-app to send app-messages directly over bluetooth to your linux bluetooth receiver. No android / ios device required - and you do not need to hook the computer to same public wifi as your phone to get it working - which might be nice if you are on a conference.
+* But if you want to use wifi to command your computer, you can (thanks to @chroonos)! Just update the configuration to use websocket as transport method.
 
 * Configurable: example key press "page down" and "page up" so that you can use pebble as slide-change device. Or configure the select key to lock the screen! Or run a gpio pin change and control your home automation!
 
