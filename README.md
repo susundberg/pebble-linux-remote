@@ -88,11 +88,13 @@ pip install -r requirements.txt
 ## Part 2: Preparing OS stuff
 
 **If you are using bluetooth transport**  
+
 1. Do normal bluetooth pairing with the device. It worked out of the box for me.
 2. do ```sudo rfcomm bind 0 00:00:00:00:00:00 1``` (replace the 00 with real pebble bluetooth address)
 3. Add your normal user to 'dialup' or similar group that has write permission to the rfcomm device
 
 **If you are using websocket transport**  
+
 1. Make sure your pebble is connected to your phone and your phone is in the same local network as your pc
 2. Enable developer connection in the settings menu of the pebble app (GadgetBridge does not yet support developer connenction)
 
@@ -116,4 +118,5 @@ pip install -r requirements.txt
 * Pebble firmware version used 2.9.1
 
 ## Used libraries
+
 * All of the communications with Pebble watch are handled with [libpebble2](https://github.com/pebble/libpebble2). This repository has stripped down version of it included, so that one is able to use standard package manager (apt-get). One should be able to replace the stripped down libpebble2 shipped with this repository with the original libpebble2 or with the  ```pip install libpebble2. ``` In case you want to use the real thing - just remove the libpebble2 directory from the this repository source. 
