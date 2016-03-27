@@ -68,6 +68,7 @@ SELECT,LONG = xdotool key ctrl+alt+l ; Lock the screen by pressing ctrl+alt+l
 ## Installation
 
 You need to install:
+
 1. python script to handle the app messages
 2. do the bluetooth binding pebble-linux
 3. install the pebble app
