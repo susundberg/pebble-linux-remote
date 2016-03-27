@@ -30,7 +30,7 @@ You might want to disable the multi-click handlers on some buttons to get faster
 ### Example config:
 ```
 [main]
-transport = bluetooth  ; Either 'bloetooth' or 'websocket'
+transport = bluetooth  ; Either 'bluetooth' or 'websocket'
 device = /dev/rfcomm0  ; bluetooth transport
 ;device = ws://192.168.0.1:9000/  ; websocket transport -- enable developer connection on your phone!
 uuid = 7f1742c48dc94bb7ac8b309faf58985a
